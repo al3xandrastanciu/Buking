@@ -15,6 +15,6 @@ public class User {
     private String name;
 
     @OneToMany(mappedBy = "user") // <-- Corectează: Bookings are un câmp numit "user"
-    private List<Bookings> bookings;
+    private List<Booking> bookings;
 
 }

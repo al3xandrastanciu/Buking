@@ -20,4 +20,9 @@ public class PropertyService {
         return propertyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
     }
+
+    public List<Property> searchProperties(String query) {
+
+        return propertyRepository.searchProperties(query);
+    }
 }

@@ -31,11 +31,30 @@
 <div class="header">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-            <a href="/" class="logo">Buking.com</a>
+            <a href="/" class="logo me-auto">Buking.com</a>
+
+            <a th:href="@{/my-bookings}" class="btn btn-light">
+                My Bookings
+            </a>
         </div>
     </div>
 </div>
 <div class="container mt-5">
+    <form method="GET" th:action="@{/properties}" class="row mb-4">
+        <div class="col-md-6">
+            <input type="text"
+                   name="query"
+                   class="form-control"
+                   placeholder="Search by hotel name or city..."
+                   th:value="${query}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Search</button>
+        </div>
+    </form>
+
+    <div class="row">
+    </div>
     <div class="row">
         <div class="col-md-4" th:each="property : ${properties}">
             <div class="card mb-4">

@@ -70,12 +70,5 @@ CREATE TABLE bookings
 
 );
 
-insert into bookings( check_in, check_out, user_id, property_id, room_id,price)
-values ('2025-10-05', '2025-10-10', 1, 1, 1,250),  -- Ana Popescu la Hilton, camera 101
-       ('2025-11-01', '2025-11-05', 2, 1, 2,500),  -- Ion Ionescu la Hilton, camera 102
-       ('2025-12-20', '2025-12-27', 3, 2, 4,300),  -- Maria Stan la Seaside, camera A101
-       ('2026-01-15', '2026-01-18', 4, 2, 5,290),  -- Andrei George la Seaside, camera A102
-       ('2026-02-10', '2026-02-14', 5, 2, 6,890),  -- Elena Dumitru la Seaside, camera B201
-       ('2026-03-01', '2026-03-07', 1, 3, 7,400),  -- Ana Popescu la Mountain Lodge, cabina L1
-       ('2026-04-12', '2026-04-15', 2, 3, 8,350),  -- Ion Ionescu la Mountain Lodge, cabina L2
-       ('2026-05-20', '2026-05-25', 3, 3, 9,500);  -- Maria Stan la Mountain Lodge, Mountain Suite
+
+TRUNCATE TABLE bookings;
