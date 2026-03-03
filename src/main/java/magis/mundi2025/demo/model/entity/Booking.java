@@ -2,7 +2,8 @@ package magis.mundi2025.demo.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import jakarta.persistence.Column;
+
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -19,17 +20,16 @@ public class Booking {
     @JoinColumn(name="property_id")
     private Property property;
 
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="room_id")
-    private Room room; // <-- CORECTAT: schimbat din List<Room> rooms în Room room
+    private Room room;
 
     @Column(name = "check_in")
-    private String checkIn;
+    private LocalDate checkIn;
 
     @Column(name = "check_out")
-    private String checkOut;
+    private LocalDate checkOut;
 
     @Column(name = "price")
     private Double price;
-
 }

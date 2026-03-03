@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title th:text="${property.name}">Property Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,140 +17,250 @@
             text-decoration: none;
         }
 
-        .property-header {
-            background: #f5f5f5;
-            padding: 20px 0;
-        }
-
-        .room-card {
-            border: 1px solid #e7e7e7;
-            margin-bottom: 20px;
-            padding: 20px;
-        }
-
-        .room-image {
-            width: 200px;
-            height: 150px;
-            object-fit: cover;
-        }
-
         .star-rating {
             color: #febb02;
             font-size: 20px;
         }
+
+        .room-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .room-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .room-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .price-tag {
+            color: #003580;
+        }
+
+        .total-price {
+            font-size: 1.3rem;
+            color: #006b3c;
+            font-weight: bold;
+        }
+
+        .btn-book {
+            background: #003580;
+            border: none;
+            font-weight: bold;
+        }
+
+        .btn-book:hover {
+            background: #0042a0;
+        }
+
+        .review-card {
+            border-left: 4px solid #003580;
+            background: #f8f9ff;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .user-badge {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 14px;
+        }
     </style>
 </head>
-<body>
-<div class="header">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
-            <a href="/" class="logo">Buking.com</a>
-        </div>
-    </div>
-</div>
-<div class="property-header">
-    <div class="container">
-        <h1 th:text="${property.name}">Property Name</h1>
-        <div class="star-rating">
-            <span th:each="i : ${#numbers.sequence(1, property.starRating)}">⭐</span>
-        </div>
-        <p th:text="${property.address}" class="mb-2">Address</p>
-    </div>
-</div>
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8">
-            <img th:src="${property.imageUrl}" class="img-fluid mb-4" alt="Property Image">
-            <h3>About this property</h3>
-            <p th:text="${property.description}">Description</p>
-        </div>
-    </div>
-    <h3 class="mt-4">Select Reservation Dates</h3>
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <label for="checkInDate">Check-in Date:</label>
-            <input type="date" id="checkInDate" class="form-control" />
-        </div>
-        <div class="col-md-3">
-            <label for="checkOutDate">Check-out Date:</label>
-            <input type="date" id="checkOutDate" class="form-control" />
+<body class="bg-light">
+    <div class="header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="/properties" class="logo">Buking.com</a>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="user-badge">👤 <span sec:authentication="name">User</span></span>
+                    <a th:href="@{/my-bookings}" class="btn btn-light btn-sm">📋 My Bookings</a>
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-outline-light btn-sm">Sign Out</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
+    <div class="container mt-4">
+        <!-- Error alert -->
+        <div th:if="${error}" class="alert alert-danger d-flex align-items-center" role="alert">
+            ⚠️ <span th:text="${error}" class="ms-2"></span>
+        </div>
 
-    <h3 class="mt-4">Available Rooms</h3>
-    <div class="room-list">
-        <div th:each="room : ${property.rooms}" class="room-card">
+        <!-- Property header -->
+        <div class="bg-white rounded-3 p-4 mb-4 shadow-sm">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 th:text="${property.name}" class="mb-2">Property Name</h1>
+                    <div class="star-rating mb-2">
+                        <span th:each="i : ${#numbers.sequence(1, property.starRating)}">⭐</span>
+                    </div>
+                    <p class="text-muted mb-1">📍 <span th:text="${property.address}">Address</span></p>
+                    <p th:text="${property.description}" class="mt-2">Description</p>
+                </div>
+                <div class="col-md-4">
+                    <img th:src="${property.imageUrl}" class="img-fluid rounded" alt="Hotel">
+                </div>
+            </div>
+        </div>
 
+        <!-- Date selection -->
+        <div class="bg-white rounded-3 p-4 mb-4 shadow-sm">
+            <h4>📅 Select Your Stay</h4>
             <div class="row">
                 <div class="col-md-3">
-                    <img th:src="${room.imageUrl}" class="room-image" alt="Room Image">
+                    <label class="form-label fw-semibold">Check-in Date</label>
+                    <input type="date" id="checkInDate" class="form-control">
                 </div>
-                <div class="col-md-6">
-                    <h4 th:text="${room.roomType}">Room Type</h4>
-                    <p>Room Number: <span th:text="${room.roomNumber}"></span></p>
-                    <p>Capacity: <span th:text="${room.capacity}"></span> guests</p>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Check-out Date</label>
+                    <input type="date" id="checkOutDate" class="form-control">
                 </div>
-                <div class="col-md-3 text-end">
+            </div>
+        </div>
+
+        <!-- Rooms -->
+        <h3 class="mb-3">🛏️ Available Rooms</h3>
+        <div th:each="room : ${property.rooms}" class="room-card bg-white">
+            <div class="row g-0">
+                <div class="col-md-3">
+                    <img th:src="${room.imageUrl}" class="room-image" alt="Room">
+                </div>
+                <div class="col-md-6 p-3">
+                    <h5 th:text="${room.roomType}" class="mb-1">Room Type</h5>
+                    <p class="text-muted small mb-1">Room No. <span th:text="${room.roomNumber}"></span></p>
+                    <p class="mb-1">👥 Capacity: <span th:text="${room.capacity}"></span> guests</p>
                     <div class="price-tag">
-                        <h3 th:text="${'€' + room.pricePerNight}">Price</h3>
-                        <p>per night</p>
+                        <strong><span th:text="${room.pricePerNight}"></span> lei / night</strong>
                     </div>
-
-                    <form method="POST" th:action="@{/book}">
-
-                        <input type="hidden" name="roomId" th:value="${room.id}" />
-                        <input type="hidden" name="propertyId" th:value="${property.id}" />
-                        <input type="hidden" name="price" th:value="${room.pricePerNight}" />
-                        <input type="hidden" name="checkIn" />
-                        <input type="hidden" name="checkOut"  />
-
-                        <button type="submit" class="btn btn-primary">
+                    <div class="total-price mt-1 nights-total" th:data-price="${room.pricePerNight}"
+                        style="display:none">
+                        Total: <span class="total-amount">0</span> lei
+                    </div>
+                </div>
+                <div class="col-md-3 p-3 d-flex align-items-center justify-content-center">
+                    <form method="POST" th:action="@{/book}" class="booking-form w-100 text-center">
+                        <input type="hidden" name="roomId" th:value="${room.id}">
+                        <input type="hidden" name="propertyId" th:value="${property.id}">
+                        <input type="hidden" name="checkIn" class="checkIn-input">
+                        <input type="hidden" name="checkOut" class="checkOut-input">
+                        <button type="submit" class="btn btn-book btn-primary w-100">
                             Book Now
                         </button>
                     </form>
                 </div>
-
             </div>
         </div>
+
+        <!-- Reviews section -->
+        <div class="bg-white rounded-3 p-4 mt-4 shadow-sm"
+            th:if="${property.reviews != null and !#lists.isEmpty(property.reviews)}">
+            <h4>⭐ Guest Reviews</h4>
+            <div th:each="review : ${property.reviews}" class="review-card">
+                <div class="d-flex justify-content-between">
+                    <strong th:text="${review.user.name}">User</strong>
+                    <span class="text-warning">
+                        <span th:each="i : ${#numbers.sequence(1, review.rating)}">⭐</span>
+                    </span>
+                </div>
+                <p class="mb-0 mt-1 text-muted small" th:text="${review.comment}">Comment</p>
+            </div>
+        </div>
+
+        <!-- Leave review form -->
+        <div class="bg-white rounded-3 p-4 mt-3 shadow-sm" th:if="${canReview}">
+            <h5>Leave a Review</h5>
+            <form th:action="@{/review/submit}" method="post">
+                <input type="hidden" name="propertyId" th:value="${property.id}">
+                <div class="mb-2">
+                    <label class="form-label">Rating (1-5):</label>
+                    <select name="rating" class="form-select" style="width:100px">
+                        <option>5</option>
+                        <option>4</option>
+                        <option>3</option>
+                        <option>2</option>
+                        <option>1</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <textarea name="comment" class="form-control" rows="2"
+                        placeholder="Share your experience..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Submit Review</button>
+            </form>
+        </div>
     </div>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const checkInInput = document.getElementById('checkInDate');
-        const checkOutInput = document.getElementById('checkOutDate');
 
-        // Selectează câmpurile ascunse o singură dată
-        const checkInHidden = document.getElementById('checkInHidden');
-        const checkOutHidden = document.getElementById('checkOutHidden');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkInInput = document.getElementById('checkInDate');
+            const checkOutInput = document.getElementById('checkOutDate');
 
-        // Selectează toate formularele de rezervare
-        const bookingForms = document.querySelectorAll('form[th\\:action="@{/book}"]');
+            const today = new Date().toISOString().split('T')[0];
+            checkInInput.min = today;
+            checkOutInput.min = today;
 
-        function updateHiddenFields() {
-            // Ia valoarea din input-urile vizibile
-            const checkInValue = checkInInput.value;
-            const checkOutValue = checkOutInput.value;
+            function updateForms() {
+                const checkIn = checkInInput.value;
+                const checkOut = checkOutInput.value;
 
-            // Copiază valoarea în câmpurile ascunse (care vor fi trimise prin POST)
-            // Notă: Dacă sunt mai multe formulare (unul per cameră), ar trebui să actualizezi
-            // toate câmpurile ascunse din fiecare formular.
+                document.querySelectorAll('.checkIn-input').forEach(el => el.value = checkIn);
+                document.querySelectorAll('.checkOut-input').forEach(el => el.value = checkOut);
 
-            bookingForms.forEach(form => {
-                form.querySelector('input[name="checkIn"]').value = checkInValue;
-                form.querySelector('input[name="checkOut"]').value = checkOutValue;
+                const datesValid = checkIn && checkOut && new Date(checkOut) > new Date(checkIn);
+
+                // Enable/disable Book Now buttons
+                document.querySelectorAll('.btn-book').forEach(btn => {
+                    btn.disabled = !datesValid;
+                    btn.title = datesValid ? '' : 'Select check-in and check-out dates first';
+                });
+
+                if (datesValid) {
+                    const nights = Math.round((new Date(checkOut) - new Date(checkIn)) / (1000 * 3600 * 24));
+                    document.querySelectorAll('.nights-total').forEach(el => {
+                        const price = parseFloat(el.dataset.price);
+                        el.querySelector('.total-amount').textContent = (price * nights).toFixed(2);
+                        el.style.display = 'block';
+                    });
+                } else {
+                    document.querySelectorAll('.nights-total').forEach(el => el.style.display = 'none');
+                }
+            }
+
+            // Block form submit if dates missing
+            document.querySelectorAll('.booking-form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    const ci = document.getElementById('checkInDate').value;
+                    const co = document.getElementById('checkOutDate').value;
+                    if (!ci || !co) {
+                        e.preventDefault();
+                        alert('Please select check-in and check-out dates before booking!');
+                    }
+                });
             });
-        }
 
-        // Rulează la schimbarea datelor
-        checkInInput.addEventListener('change', updateHiddenFields);
-        checkOutInput.addEventListener('change', updateHiddenFields);
+            checkInInput.addEventListener('change', function () {
+                checkOutInput.min = this.value;
+                updateForms();
+            });
+            checkOutInput.addEventListener('change', updateForms);
 
-        // Setează o dată implicită la încărcare
-        updateHiddenFields();
-    });
-</script>
+            updateForms(); // initialize on load
+        });
+    </script>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </html>

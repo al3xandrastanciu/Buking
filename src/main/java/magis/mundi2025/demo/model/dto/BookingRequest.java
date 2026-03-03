@@ -4,12 +4,8 @@ import lombok.Data;
 
 @Data
 public class BookingRequest {
-
     private Long roomId;
     private Long propertyId;
-    private double price;
     private String checkIn;
     private String checkOut;
-
-
 }

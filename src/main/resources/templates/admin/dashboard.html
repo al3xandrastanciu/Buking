@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Admin Dashboard - Buking.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .header {
+            background: #003580;
+            padding: 16px 0;
+        }
+
+        .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .stat-card {
+            border-radius: 12px;
+            padding: 24px;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-hotels {
+            background: linear-gradient(135deg, #003580, #0055b3);
+        }
+
+        .stat-bookings {
+            background: linear-gradient(135deg, #006b3c, #009b5b);
+        }
+
+        .stat-users {
+            background: linear-gradient(135deg, #8B4513, #c2691e);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .table-hover tbody tr:hover {
+            background: #f0f5ff;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="/admin/dashboard" class="logo">⚙️ Admin Panel</a>
+            <div class="d-flex gap-2">
+                <a href="/properties" class="btn btn-light btn-sm">🏨 Public View</a>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm">Sign Out</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <h2 class="mb-4">Dashboard</h2>
+
+        <!-- Stats -->
+        <div class="row mb-5">
+            <div class="col-md-4 mb-3">
+                <div class="stat-card stat-hotels">
+                    <div class="stat-number" th:text="${propertyCount}">0</div>
+                    <div>🏨 Properties</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="stat-card stat-bookings">
+                    <div class="stat-number" th:text="${bookingCount}">0</div>
+                    <div>📋 Bookings</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="stat-card stat-users">
+                    <div class="stat-number" th:text="${userCount}">0</div>
+                    <div>👥 Users</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties table -->
+        <div class="bg-white rounded-3 shadow-sm p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">🏨 Properties</h4>
+                <a th:href="@{/admin/properties/new}" class="btn btn-primary btn-sm">+ Add Property</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Stars</th>
+                            <th>Rooms</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="property : ${properties}">
+                            <td th:text="${property.id}"></td>
+                            <td th:text="${property.name}"></td>
+                            <td th:text="${property.address}" class="text-muted small"></td>
+                            <td>
+                                <span th:each="i : ${#numbers.sequence(1, property.starRating)}">⭐</span>
+                            </td>
+                            <td>
+                                <span th:text="${#lists.size(property.rooms)}" class="badge bg-secondary"></span>
+                                <a th:href="@{/admin/rooms/new/{id}(id=${property.id})}"
+                                    class="btn btn-outline-primary btn-sm ms-1">+ Room</a>
+                            </td>
+                            <td>
+                                <a th:href="@{/admin/properties/edit/{id}(id=${property.id})}"
+                                    class="btn btn-warning btn-sm">✏️ Edit</a>
+                                <form th:action="@{/admin/properties/delete/{id}(id=${property.id})}" method="post"
+                                    class="d-inline" onsubmit="return confirm('Delete this property?')">
+                                    <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

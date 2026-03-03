@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Add Room - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .header {
+            background: #003580;
+            padding: 16px 0;
+        }
+
+        .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #003580;
+            border: none;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="header">
+        <div class="container">
+            <a href="/admin/dashboard" class="logo">⚙️ Admin Panel</a>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="bg-white rounded-3 shadow-sm p-4" style="max-width: 560px; margin: auto;">
+            <h3 class="mb-1">🛏️ Add New Room</h3>
+            <p class="text-muted mb-4">Property: <strong th:text="${property.name}">Hotel</strong></p>
+
+            <form th:action="@{/admin/rooms/save/{id}(id=${property.id})}" method="post" th:object="${room}">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Room Number *</label>
+                    <input type="text" th:field="*{roomNumber}" class="form-control" required placeholder="e.g. 101">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Room Type *</label>
+                    <select th:field="*{roomType}" class="form-select" required>
+                        <option value="">-- Select --</option>
+                        <option value="Single">Single</option>
+                        <option value="Double">Double</option>
+                        <option value="Twin">Twin</option>
+                        <option value="Suite">Suite</option>
+                        <option value="Apartment">Apartment</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Price per Night (lei) *</label>
+                    <input type="number" th:field="*{pricePerNight}" class="form-control" step="0.01" min="0" required
+                        placeholder="e.g. 350">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Capacity (guests) *</label>
+                    <input type="number" th:field="*{capacity}" class="form-control" min="1" max="10" required
+                        placeholder="e.g. 2">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Image URL</label>
+                    <input type="text" th:field="*{imageUrl}" class="form-control" placeholder="https://...">
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">💾 Save Room</button>
+                    <a href="/admin/dashboard" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

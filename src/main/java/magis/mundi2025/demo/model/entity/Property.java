@@ -17,9 +17,9 @@ public class Property {
     private Integer starRating;
     private String imageUrl;
 
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
-//    @OneToMany(mappedBy = "hotel")
-//    private List<Review> reviews;
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    private List<Review> reviews;
 }
