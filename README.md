@@ -1,47 +1,75 @@
-# Buking - Reservation System (Magis Mundi 2025)
+# Buking - Reservation System 
 
-This project is a hotel reservation web application developed by extending a base project provided during a technical workshop. The application allows users to browse properties, view room details, and perform real-time bookings with persistent data storage.
+This project is a hotel reservation web application developed by **extending and enhancing a base skeleton provided during the Magis Mundi 2025 technical workshop**. Starting from a minimal Spring Boot structure with basic entities, I implemented the full business logic, security layer, and additional features to build a complete, production-ready application.
 
 ##  Key Contributions & Implemented Features
 
-I have extended and enhanced the pre-existing Spring Boot application by integrating the following features:
+The following features were added on top of the original skeleton:
 
-* **Core Reservation Functionality (CRUD):** Implemented the full business logic for the booking process, ensuring data persistence for both `Booking` and `User` entities.
-* **Three-Tier Architecture:** Structured the backend following industry best practices:
-    * **Controllers:** To handle HTTP requests and manage web flow (e.g., `BookingController`, `PropertyViewController`).
-    * **Services:** To manage business logic and orchestrate data operations (e.g., `BookingService`).
-    * **Repositories:** Using Spring Data JPA for efficient database communication (e.g., `BookingRepository`, `UserRepository`).
-* **User-Facing Interfaces (Thymeleaf):**
-    * **Booking Confirmation Page:** Developed a dedicated view to provide users with immediate feedback and details after a successful reservation.
-    * **"My Bookings" Page:** Created a specific history page where users can view their active reservations, room types, and stay periods.
+- **Authentication** — Secure login and registration with Spring Security 6 & BCrypt password encryption
+- **Room Availability Check** — Rooms cannot be double-booked; overlapping reservations are automatically rejected using a JPQL overlap query
+- **Server-side Price Calculation** — Total price is calculated securely on the server (nights × price/night), not from the frontend form
+- **My Bookings** — Each user can view their own reservation history
+- **Reviews & Ratings** — Users who have stayed at a property can leave a star rating and comment
+- **Admin Panel** — Administrators can add, edit, and delete properties and rooms, and view platform statistics
+- **Demo Data Initializer** — Populates the database with sample hotels, rooms and user accounts on startup
 
-##  Key Technologies
+## Tech Stack
 
-* **Language:** Java 21
-* **Framework:** Spring Boot 3.5.6
-* **Data Access:** Spring Data JPA
-* **Database:** H2 (In-Memory)
-* **Template Engine:** Thymeleaf
-* **Frontend:** Bootstrap 5 for a responsive UI
-* **Utilities:** Lombok to reduce boilerplate code
+| Layer | Technology |
+|-------|-----------|
+| Language | Java 21 |
+| Framework | Spring Boot 3.5.6 |
+| Security | Spring Security 6 |
+| Data Access | Spring Data JPA + Hibernate |
+| Database | H2 (In-Memory) |
+| Template Engine | Thymeleaf |
+| Frontend | Bootstrap 5 |
+| Utilities | Lombok |
 
-##  Data Model
+## Data Model
 
-The application architecture relies on four main interconnected entities:
-1.  **Property:** Represents hotels or accommodation units.
-2.  **Room:** Specific rooms belonging to a property.
-3.  **User:** Users who perform the bookings.
-4.  **Booking:** Connects a user, a property, and a room for a specific timeframe.
+- **User** — Registered users with roles (`ROLE_USER`, `ROLE_ADMIN`)
+- **Property** — Hotels with name, address, description, star rating and image
+- **Room** — Rooms belonging to a property (type, price per night, capacity)
+- **Booking** — Links a user, property and room for a date range (check-in / check-out)
+- **Review** — Star rating + comment left by a user for a property after their stay
 
-##  How to Run the Project
+## How to Run
 
-1.  **Prerequisites:** Ensure you have **Java 21** installed on your system.
-2.  **Execution:** Run the application using the Maven wrapper:
-    ```bash
-    ./mvnw spring-boot:run
-    ```
-3.  **Access:** Open your browser at: `http://localhost:8080/properties`.
-4.  **Database Console:** The H2 console is available at `http://localhost:8080/h2-console` (Username: `sa`, no password).
+**Prerequisites:** Java 21, Maven
 
----
+```bash
+mvn spring-boot:run
+```
 
+Then open: [http://localhost:8080](http://localhost:8080)
+
+### Demo Accounts
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@buking.ro | admin123 |
+| User | user@buking.ro | user123 |
+
+### H2 Database Console
+
+Available at [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+
+```
+JDBC URL:  jdbc:h2:mem:hoteldb
+Username:  sa
+Password:  (leave empty)
+```
+
+## Application Pages
+
+| Page | URL | Access |
+|------|-----|--------|
+| Login | `/login` | Public |
+| Register | `/register` | Public |
+| Properties | `/properties` | Logged in |
+| Property Details + Book | `/properties/{id}` | Logged in |
+| My Bookings | `/my-bookings` | Logged in |
+| Booking Confirmation | `/booking/confirmation/{id}` | Logged in |
+| Admin Dashboard | `/admin/dashboard` | Admin only |
